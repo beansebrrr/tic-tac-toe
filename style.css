@@ -11,7 +11,7 @@
   --text-main-dark: #eeeeee;
   --accent-main: #ff8b3d;
 
-  --default-inline-padding: min(5rem, 8%);
+  --default-inline-padding: max(1rem, 16%);
 
   background-color: var(--background-main-light);
   color: var(--text-main-light);
@@ -36,3 +36,13 @@ header>* {
   padding: 0;
 }
 
+.board {
+  display: grid;
+  width: 500px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.cell {
+  aspect-ratio: 1 / 1;
+  font-size: 2rem;
+}

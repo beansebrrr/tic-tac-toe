@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "Doto";
+  src: url(./fonts/doto-700.woff2);
+  font-weight: 700;
+}
+
 *,
 *::after,
 *::before {
@@ -43,6 +49,7 @@ header>* {
 }
 
 .cell {
+  font-family: "Doto";
   aspect-ratio: 1 / 1;
-  font-size: 2rem;
+  font-size: 4rem;
 }

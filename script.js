@@ -2,44 +2,53 @@
  * TIC TAC TOE
  */
 
-function Game(container, player1, player2) {
+function Game(selector, player1, player2) {
+  const gameContainer = document.querySelector(selector)
   let currentPlayer
 
   let boardArr = [
-    ["", "x", ""],
-    ["", "o", ""],
-    ["", "o", ""],
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
   ]
-  const boardElement = document.querySelector(container)
+  const boardElement = gameContainer.querySelector(".board")
+  const messageElement = gameContainer.querySelector(".message")
 
   this.start = () => {
-    updateBoard(true)
     switchPlayers()
+    updateBoard(true)
   }
 
   const updateBoard = (clear = false) => {
+    // Check for a winner
     boardElement.replaceChildren()
+    // Update all the board's cells
     for (let row in boardArr) {
     for (let col in boardArr[row]) {
-      if (clear) {
+      if (clear)
         boardArr[row][col] = ""
-      }
+
       const Cell = createCell(boardArr[row][col], col, row)
       boardElement.appendChild(Cell)
-    }
-    }
+    }}
+
+  }
+  
+  const showResult = () => {
+    // Update the messageScreen
+    if (checkWinner() === "tie") messageElement.textContent = checkWinner()
+    else if (checkWinner()) messageElement.textContent = `${checkWinner()} wins`
+    else messageElement.textContent = `${currentPlayer.name}'s turn`
   }
 
-  this.playTurn = (plyr, posX, posY) => {
+  const playTurn = (plyr, posX, posY) => {
     const symbol = plyr.symbol
 
     if (!posX) posX = prompt(`${plyr.name} posX`)
     if (!posY) posY = prompt(`${plyr.name} posY`)
 
-    fillCell(posY, posX, symbol)
-    for (let row of boardArr) console.log(row)
-    console.log(this.checkWinner())
-    switchPlayers()
+    if (fillCell(posY, posX, symbol) != 1)
+      switchPlayers()
   }
 
   const fillCell = (col, row, symbol) => {
@@ -48,7 +57,7 @@ function Game(container, player1, player2) {
     else return 1
   }
 
-  this.checkWinner = () => {
+  const checkWinner = () => {
     let winSymbol
     let boardIsFull = true
 
@@ -83,7 +92,7 @@ function Game(container, player1, player2) {
       boardArr[2][2]
     )) winSymbol = boardArr[1][1]
 
-    if (winSymbol) return winSymbol
+    if (winSymbol) return [player1, player2].filter(player => player.symbol === winSymbol)[0].name
     else if (boardIsFull) return "tie"
     else return ""
   }
@@ -100,12 +109,13 @@ function Game(container, player1, player2) {
     cell.textContent = content
 
     cell.addEventListener("click", () => {
-      this.playTurn(currentPlayer, arrayCoordinateCol, arrayCoordinateRow)
+      playTurn(currentPlayer, arrayCoordinateCol, arrayCoordinateRow)
       updateBoard()
+      showResult()
     })
 
     return cell
-  } 
+  }
 }
 
 class Player {
@@ -118,6 +128,6 @@ class Player {
 const matchu = new Player("Matchu", "x")
 const sel = new Player("Sel", "o")
 
-const game = new Game(".board",matchu, sel)
+const game = new Game("main", matchu, sel)
 
 game.start()

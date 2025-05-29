@@ -11,12 +11,15 @@ function Game(selector, player1, player2) {
     ["", "", ""],
     ["", "", ""],
   ]
-  const boardElement = gameContainer.querySelector(".board")
-  const messageElement = gameContainer.querySelector(".message")
+
+  const btnRestart = gameContainer.querySelector("#btn-restart")
+  const boardElement = gameContainer.querySelector("#board")
+  const messageElement = gameContainer.querySelector("#message")
 
   this.start = () => {
-    switchPlayers()
     updateBoard(true)
+    switchPlayers(true)
+    showResult()
   }
 
   const updateBoard = (clear = false) => {
@@ -31,7 +34,6 @@ function Game(selector, player1, player2) {
       const Cell = createCell(boardArr[row][col], col, row)
       boardElement.appendChild(Cell)
     }}
-
   }
   
   const showResult = () => {
@@ -97,8 +99,8 @@ function Game(selector, player1, player2) {
     else return ""
   }
 
-  const switchPlayers = () => {
-    if (!currentPlayer) currentPlayer = player1
+  const switchPlayers = (reset=false) => {
+    if (!currentPlayer || reset) currentPlayer = player1
     else if (currentPlayer === player1) currentPlayer = player2
     else if (currentPlayer === player2) currentPlayer = player1
   }
@@ -107,27 +109,29 @@ function Game(selector, player1, player2) {
     const cell = document.createElement("button")
     cell.classList.add("cell")
     cell.textContent = content
+    if (content) cell.classList.add(content)
 
-    cell.addEventListener("click", () => {
-      playTurn(currentPlayer, arrayCoordinateCol, arrayCoordinateRow)
-      updateBoard()
-      showResult()
-    })
+    if (!checkWinner()) 
+      cell.addEventListener("click", () => {
+        playTurn(currentPlayer, arrayCoordinateCol, arrayCoordinateRow)
+        updateBoard()
+        showResult()
+      })
 
     return cell
   }
+
+  btnRestart.addEventListener("click", this.start)
 }
 
-class Player {
-  constructor(name, symbol) {
-    this.name = name
-    this.symbol = symbol
-  }
+function Player(name, symbol) {
+  this.name = name
+  this.symbol = symbol
 }
 
-const matchu = new Player("Matchu", "x")
-const sel = new Player("Sel", "o")
+const player1 = new Player("Player one", "x")
+const player2 = new Player("Player two", "o")
 
-const game = new Game("main", matchu, sel)
+const game = new Game("main", player1, player2)
 
 game.start()
